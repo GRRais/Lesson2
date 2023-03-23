@@ -9,6 +9,25 @@ import android.util.AttributeSet
 import android.view.View
 
 class TestView: View {
+
+    private val circlePaint = Paint().apply {
+        color = Color.BLUE
+        strokeWidth = 10f
+    }
+
+    private val rectF = RectF()
+
+    private val rectPaint = Paint().apply {
+        color = Color.RED
+    }
+
+    private val arcPaint = Paint().apply {
+        color = Color.GREEN
+    }
+
+    private val arcRectF = RectF()
+
+
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -26,26 +45,37 @@ class TestView: View {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
+//    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+//
+//        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+//        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+//
+//        setMeasuredDimension()
+//    }
+
+    fun setData() {
+
+        invalidate()
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val paint = Paint()
-        paint.color = Color.BLUE
-        paint.strokeWidth = 10f
+        canvas.drawCircle(width/2f, height/2f, Math.min(width/2f, height/2f), circlePaint)
 
-        canvas.drawCircle(width/2f, height/2f, Math.min(width/2f, height/2f), paint)
-
-        val rectF = RectF()
         rectF.left = 50f
-        rectF.right = 50f
+        rectF.right = width - 50f
         rectF.top = 100f
-        rectF.bottom = 100f
+        rectF.bottom = height - 100f
 
-        val paint2 = Paint()
-        paint2.color = Color.RED
-        paint2.strokeWidth = 10f
+        canvas.drawRect(rectF, rectPaint)
 
-        canvas.drawRect(rectF, paint2)
+        arcRectF.left = 50f
+        arcRectF.right = width - 50f
+        arcRectF.top = 100f
+        arcRectF.bottom = height - 100f
+
+        canvas.drawArc(arcRectF, 200f, 90f, true, arcPaint)
 
     }
 }
