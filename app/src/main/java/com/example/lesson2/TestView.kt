@@ -6,7 +6,10 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import java.lang.Float.min
 
 class TestView: View {
 
@@ -27,10 +30,21 @@ class TestView: View {
 
     private val arcRectF = RectF()
 
+    private var centerX = 0f
+    private var centerY = 0f
+
+    private var pointerX = 0f
+    private var pointerY = 0f
+
 
     constructor(context: Context?) : super(context)
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        val attrt = context.obtainStyledAttributes(attrs, R.styleable.TestView, 0, 0)
+        val color = attrt.getColor(R.styleable.TestView_pointerColor, 0)
+
+        circlePaint.color = color
+    }
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
@@ -45,6 +59,27 @@ class TestView: View {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+
+        rectF.left = 50f
+        rectF.right = w - 50f
+        rectF.top = 100f
+        rectF.bottom = h - 100f
+
+        arcRectF.left = 50f
+        arcRectF.right = w - 50f
+        arcRectF.top = 100f
+        arcRectF.bottom = h - 100f
+
+        centerX = width/2f
+        centerY = height/2f
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
 //    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 //
 //        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
@@ -53,29 +88,49 @@ class TestView: View {
 //        setMeasuredDimension()
 //    }
 
-    fun setData() {
-
-        invalidate()
-    }
+//    fun setData() {
+//
+//        invalidate()
+//    }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        canvas.drawCircle(width/2f, height/2f, Math.min(width/2f, height/2f), circlePaint)
-
-        rectF.left = 50f
-        rectF.right = width - 50f
-        rectF.top = 100f
-        rectF.bottom = height - 100f
-
+        canvas.drawCircle(centerX, centerY, min(centerX, centerY), circlePaint)
         canvas.drawRect(rectF, rectPaint)
+        canvas.drawArc(arcRectF, 180f, 90f, true, arcPaint)
 
-        arcRectF.left = 50f
-        arcRectF.right = width - 50f
-        arcRectF.top = 100f
-        arcRectF.bottom = height - 100f
+        canvas.drawCircle(pointerX, pointerY, 200f, circlePaint)
 
-        canvas.drawArc(arcRectF, 200f, 90f, true, arcPaint)
+    }
 
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        super.onTouchEvent(event)
+
+        pointerX = event.x
+        pointerY = event.y
+
+        if (rectF.contains(event.x, event.y)) {
+            Log.d("TestView", "YESS")
+        } else {
+            Log.d("TestView", "NO")
+
+        }
+
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            Log.d("TestView", "Action_DOWN x = ${event.x}, y = ${event.y}")
+        }
+
+        if (event.action == MotionEvent.ACTION_UP) {
+            Log.d("TestView", "Action_UP x = ${event.x}, y = ${event.y}")
+        }
+
+        if (event.action == MotionEvent.ACTION_MOVE) {
+            Log.d("TestView", "Action_MOVE x = ${event.x}, y = ${event.y}")
+        }
+
+        invalidate()
+
+        return true
     }
 }

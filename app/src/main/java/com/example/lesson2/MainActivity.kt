@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
 
         val testView = findViewById<TestView>(R.id.testView)
 
-        testView.setData()
+//        testView.setData()
 
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TestView">
+
+        <attr name="pointerColor" format="color">
+
+        </attr>
+
+    </declare-styleable>
+
+</resources>
